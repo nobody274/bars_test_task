@@ -1,0 +1,66 @@
+{% extends 'sith_recruiting/base.html' %}
+
+{% block content %}
+<script>
+    function f() {
+        var rc = document.getElementById("recruit_select");
+        var recruit_id = rc.options[rc.selectedIndex].id;
+        var ops = rc.getElementsByTagName('option');
+        var cur_div = document.getElementById("div_" + recruit_id);
+
+        for (var i = 0; i < ops.length; i++)
+        {
+            temp_div_id = "div_" + ops[i].id;
+            temp_div_obj = document.getElementById(temp_div_id);
+            if (temp_div_obj != null)
+            {
+                temp_div_obj.style = "display: none";
+            }
+            if (cur_div != null)
+            {
+                cur_div.style = "display: block";
+            }
+            console.log(temp_div_id);
+        }
+    }
+</script>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if siths_set %}
+        <select>
+            {% for sith in siths_set %}
+            <option id="{{ sith.id }}">{{ sith.name }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <br>
+    {% if recruits_set %}
+        <select name="recruit_select" id="recruit_select" onchange="f()">
+            <option id="0" value="0">-------</option>
+            {% for recruit in recruits_set %}
+                <option id="{{ recruit.id }}" value="{{ recruit.id }}">{{ recruit.name }}</option>
+            {% endfor %}
+        </select>
+
+        {% for recruit in recruits_set %}
+            <div id="div_{{recruit.id}}" style="display: none">
+                {% for answer in answers %}
+                    {% if answer.recruit_id == recruit.id %}
+                        {% for question in questions %}
+                            {% if question.id == answer.question_id %}
+                                <p>
+                                    {{ question.question_text }} :
+                                    {{ answer.value }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <input type="submit" value="Принять">
+</form>
+{% endblock %}

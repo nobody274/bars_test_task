@@ -1,0 +1,9 @@
+{% extends 'sith_recruiting/base.html' %}
+
+{% block content %}
+
+Вход <br>
+<a href="{% url 'sith_recruiting:recruit' %}">Для рекрутов</a> |
+<a href="{% url 'sith_recruiting:sith' %}">Для ситхов</a>
+
+{% endblock %}
